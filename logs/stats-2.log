@@ -1,0 +1,46 @@
+[STATS] 2025/08/29 08:59:03 2025-08-29 08:59:03 - 
+=== RECONCILIATION STATISTICS ===
+Start Time: 2025-08-29 08:58:19
+Elapsed Time: 44s
+Progress: 50/1669 (3.0%)
+Successful Matches: 2
+Unmatched Cities: 48
+Consolidated Cities: 50
+Created Cities: 2
+Updated Records: 3
+Errors: 0
+API Calls: 50 (avg: 872ms)
+
+Unmatched Reasons:
+  no suitable matches found among 13 results: 3
+  no suitable matches found among 11 results: 2
+  no suitable matches found among 9 results: 2
+  no suitable matches found among 1 results: 8
+  no suitable matches found among 34 results: 1
+  no suitable matches found among 2 results: 3
+  API error: API request failed with status 500: {"error":{"code":"500", "message":"Internal Server Error"}}: 1
+  no suitable matches found among 3 results: 1
+  no suitable matches found among 25 results: 1
+  no suitable matches found among 8 results: 1
+  no suitable matches found among 4 results: 3
+  no suitable matches found among 5 results: 2
+  no suitable matches found among 18 results: 1
+  no suitable matches found among 6 results: 2
+  no suitable matches found among 7 results: 1
+  no suitable matches found among 16 results: 2
+  API error: API request failed with status 404: {"error":{"code":"404", "message":"Not Found"}}: 14
+[STATS] 2025/08/29 09:55:25 2025-08-29 09:55:25 - 
+=== RECONCILIATION STATISTICS ===
+Start Time: 2025-08-29 09:55:17
+Elapsed Time: 8s
+Progress: 2/2 (100.0%)
+Successful Matches: 1
+Unmatched Cities: 1
+Consolidated Cities: 2
+Created Cities: 1
+Updated Records: 14
+Errors: 0
+API Calls: 2 (avg: 3.721s)
+
+Unmatched Reasons:
+  no suitable matches found among 3 results: 1

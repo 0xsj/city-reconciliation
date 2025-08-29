@@ -1,0 +1,28 @@
+[STATS] 2025/08/29 09:56:51 2025-08-29 09:56:51 - 
+=== RECONCILIATION STATISTICS ===
+Start Time: 2025-08-29 09:56:19
+Elapsed Time: 33s
+Progress: 50/1616 (3.1%)
+Successful Matches: 0
+Unmatched Cities: 50
+Consolidated Cities: 50
+Created Cities: 0
+Updated Records: 0
+Errors: 0
+API Calls: 50 (avg: 638ms)
+
+Unmatched Reasons:
+  no suitable matches found among 9 results: 2
+  no suitable matches found among 12 results: 1
+  no suitable matches found among 16 results: 1
+  API error: API request failed with status 404: {"error":{"code":"404", "message":"Not Found"}}: 17
+  no suitable matches found among 4 results: 2
+  no suitable matches found among 3 results: 2
+  no suitable matches found among 2 results: 5
+  no suitable matches found among 8 results: 8
+  no suitable matches found among 11 results: 1
+  no suitable matches found among 1 results: 5
+  no suitable matches found among 6 results: 3
+  no suitable matches found among 10 results: 1
+  no suitable matches found among 13 results: 1
+  no suitable matches found among 5 results: 1
