@@ -230,19 +230,23 @@ func (c *Client) GetCityByID(cityID string) (*LightboxCity, error) {
 	return &city, nil
 }
 
-func (c *Client) FindCityByCoordinates(lat, lng float64) (*LightboxCity, error) {
-	// Search for cities near these coordinates
-	// This is a simplified approach - you might need a proper reverse geocoding endpoint
+func (c *Client) FindCityByCoordinates(lat, lng float64, limit int) (*LightboxCity, error) {
+	// Search for cities using a broad term instead of empty search
 	endpoint := fmt.Sprintf("%s/cities/us/_autocomplete", c.BaseURL)
 	u, err := url.Parse(endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}
 
-	// Use a broad search and filter by proximity
+	// Use configurable limit, default to 1000 for better geographic coverage
+	if limit == 0 {
+		limit = 1000
+	}
+
+	// Use a broad search term instead of empty string
 	query := u.Query()
-	query.Set("text", "")  // Empty search to get nearby cities
-	query.Set("limit", "100")
+	query.Set("text", "city")
+	query.Set("limit", fmt.Sprintf("%d", limit))
 	u.RawQuery = query.Encode()
 
 	req, err := http.NewRequest("GET", u.String(), nil)
