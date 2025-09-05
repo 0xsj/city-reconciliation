@@ -5,6 +5,41 @@ import (
 	"fmt"
 )
 
+func (db *DB) GetOrphanedCities() ([]OrphanedCity, error) {
+    query := `
+        SELECT 
+            im.cityId,
+            COALESCE(im.cityName, '') as cityName,
+            COALESCE(im.countyName, '') as countyName,
+            COALESCE(im.stateId, '') as stateId,
+            COALESCE(im.stateName, '') as stateName,
+            COUNT(*) as incident_count
+        FROM incident_metadata im 
+        LEFT JOIN cities c ON im.cityId = c.id 
+        WHERE c.id IS NULL AND im.cityId IS NOT NULL
+        GROUP BY im.cityId, im.cityName, im.countyName, im.stateId, im.stateName
+        ORDER BY incident_count DESC
+    `
+    
+    rows, err := db.Query(query)
+    if err != nil {
+        return nil, fmt.Errorf("failed to query orphaned cities: %w", err)
+    }
+    defer rows.Close()
+    
+    var cities []OrphanedCity
+    for rows.Next() {
+        var city OrphanedCity
+        err := rows.Scan(&city.ID, &city.Name, &city.County, &city.StateCode, &city.StateName, &city.IncidentCount)
+        if err != nil {
+            return nil, fmt.Errorf("failed to scan orphaned city: %w", err)
+        }
+        cities = append(cities, city)
+    }
+    
+    return cities, nil
+}
+
 func (db *DB) GetManualCities() ([]City, error) {
 	query := `
 		SELECT id, name, CountyId, COALESCE(expandedName, '') as expandedName, 

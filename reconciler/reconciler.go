@@ -344,10 +344,10 @@ func (r *Reconciler) ReconcileCity(city database.City) error {
 	}()
 
 	// Normalize the county ID
-	normalizedCountyID := r.lightboxClient.NormalizeCountyFIPS(city.CountyID)
+	// normalizedCountyID := r.lightboxClient.NormalizeCountyFIPS(city.CountyID)
 	
 	// Try to find a match in Lightbox
-	matchResult, err := r.lightboxClient.FindBestMatch(city.Name, normalizedCountyID)
+	matchResult, err := r.lightboxClient.FindBestMatch(city.Name)
 	if err != nil {
 		// Check if this is an API error we should skip
 		if r.isSkippableAPIError(err) {

@@ -5,89 +5,52 @@ import (
 	"strings"
 )
 
-func (c *Client) FindBestMatch(cityName, countyID string) (*MatchResult, error) {
-	// Extract state from county ID (first 2 digits)
-	if len(countyID) < 2 {
-		return &MatchResult{
-			Found:     false,
-			MatchType: "none",
-			Error:     "invalid county ID format",
-		}, nil
-	}
+func (c *Client) FindBestMatch(cityName string) (*MatchResult, error) {
+    params := SearchParams{
+        CityName: cityName,
+        Limit:    100,
+    }
 
-	stateFIPS := countyID[:2]
-	
-	// Search for cities with this name
-	params := SearchParams{
-		CityName: cityName,
-		Limit:    100,
-	}
+    resp, err := c.SearchCities(params)
+    if err != nil {
+        return &MatchResult{
+            Found:     false,
+            MatchType: "none",
+            Error:     fmt.Sprintf("API error: %v", err),
+        }, nil
+    }
 
-	resp, err := c.SearchCities(params)
-	if err != nil {
-		return &MatchResult{
-			Found:     false,
-			MatchType: "none",
-			Error:     fmt.Sprintf("API error: %v", err),
-		}, nil
-	}
+    if len(resp.Cities) == 0 {
+        return &MatchResult{
+            Found:     false,
+            MatchType: "none",
+            Error:     "no cities found",
+        }, nil
+    }
 
-	if len(resp.Cities) == 0 {
-		return &MatchResult{
-			Found:     false,
-			MatchType: "none",
-			Error:     "no cities found",
-		}, nil
-	}
+    // For orphaned cities, just take the first match if name matches exactly
+    cityNameLower := strings.ToLower(strings.TrimSpace(cityName))
+    
+    for _, city := range resp.Cities {
+        lightboxNameLower := strings.ToLower(strings.TrimSpace(city.Location.Locality))
+        
+        if lightboxNameLower == cityNameLower {
+            return &MatchResult{
+                Found:        true,
+                LightboxCity: &city,
+                MatchType:    "name_match",
+                Confidence:   0.8,
+            }, nil
+        }
+    }
 
-	// Try to find exact matches
-	exactMatches := c.findExactMatches(resp.Cities, cityName, countyID)
-	if len(exactMatches) == 1 {
-		return &MatchResult{
-			Found:        true,
-			LightboxCity: &exactMatches[0],
-			MatchType:    "exact",
-			Confidence:   1.0,
-		}, nil
-	}
-
-	if len(exactMatches) > 1 {
-		return &MatchResult{
-			Found:        true,
-			LightboxCity: &exactMatches[0], // Take the first one
-			MatchType:    "exact_multiple",
-			Confidence:   0.9,
-			Error:        fmt.Sprintf("found %d exact matches, using first", len(exactMatches)),
-		}, nil
-	}
-
-	// Try fuzzy matches by state
-	stateMatches := c.findStateMatches(resp.Cities, cityName, stateFIPS)
-	if len(stateMatches) == 1 {
-		return &MatchResult{
-			Found:        true,
-			LightboxCity: &stateMatches[0],
-			MatchType:    "state_match",
-			Confidence:   0.8,
-		}, nil
-	}
-
-	if len(stateMatches) > 1 {
-		return &MatchResult{
-			Found:        true,
-			LightboxCity: &stateMatches[0], // Take the first one
-			MatchType:    "state_multiple",
-			Confidence:   0.7,
-			Error:        fmt.Sprintf("found %d state matches, using first", len(stateMatches)),
-		}, nil
-	}
-
-	// No good matches found
-	return &MatchResult{
-		Found:     false,
-		MatchType: "none",
-		Error:     fmt.Sprintf("no suitable matches found among %d results", len(resp.Cities)),
-	}, nil
+    // If no exact match, return the first result with lower confidence
+    return &MatchResult{
+        Found:        true,
+        LightboxCity: &resp.Cities[0],
+        MatchType:    "partial_match", 
+        Confidence:   0.6,
+    }, nil
 }
 
 func (c *Client) findExactMatches(cities []LightboxCity, cityName, countyID string) []LightboxCity {

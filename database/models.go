@@ -1,5 +1,14 @@
 package database
 
+type OrphanedCity struct {
+    ID            string `db:"cityId"`
+    Name          string `db:"cityName"`
+    County        string `db:"countyName"`
+    StateCode     string `db:"stateId"`
+    StateName     string `db:"stateName"`
+    IncidentCount int    `db:"incident_count"`
+}
+
 type City struct {
 	ID            string `db:"id"`
 	Name          string `db:"name"`

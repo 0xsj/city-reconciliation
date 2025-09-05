@@ -15,6 +15,7 @@ type Config struct {
 	DryRun       bool
 	Concurrency  int
 	LogLevel     string
+	ProcessOrphaned bool 
 }
 
 func Load() *Config {
